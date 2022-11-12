@@ -1,0 +1,131 @@
+<!-- Patrick Davis 001119456 -->
+
+<!DOCTYPE html>
+<!-- styling for the board -->
+<style>
+div#memory_board{
+	background: tomato;
+	border:#999 1px solid;
+	width:800px;
+	height:540px;
+	padding:24px;
+	margin:0px auto;
+}
+div#memory_board > div{
+	background: url(tile_bg.jpg) no-repeat;
+	border:#000 1px solid;
+	width:70px;
+	height:70px;
+	float:left;
+	margin:10px;
+	padding:20px;
+	font-size:60px;
+	cursor:pointer;
+	text-align:center;
+}
+div {
+	width: 100px;
+	height: 100px;
+	background: red;
+	position: relative;
+	-webkit-animation: mymove 120s;
+	-webkit-animation-play-state: paused;
+	animation: mymove 120s;
+	animation-play-state: paused;
+}
+@-webkit-keyframes mymove {
+	from {left: 0px;}
+	to {left: 100px;}
+}
+
+@keyframes mymove {
+	from {left: 0px;}
+	to {left: 100px;}
+}
+</style>
+<html>
+
+<body>
+<h1 style = "text-align: center; color: red; font-size: 500%; font-family: georgia">Match Game</h1>
+<br>
+<button id="playbutton">How To Play</button>
+
+<p id="demo"></p>
+<!-- script for the page-->
+<script>
+document.getElementById("playbutton").addEventListener("click", displayInfo);
+
+
+function displayInfo() {
+document.getElementById("demo").innerHTML = "Welcome to Match Game in which you will have to choose and match the numbers in order to win the game.  Click a box to reveal the number and then find it's pair. Good luck and have fun!";
+
+}
+var memory_array = ['1','1','2','2','3','3','4','4','5','5','6','6','7','7','8','8','9','9','10','10','11','11','12','12'];
+var memory_values = [];
+var memory_tile_ids = [];
+var tiles_flipped = 0;
+Array.prototype.memory_tile_shuffle = function(){
+var i = this.length, j, temp;
+while(--i > 0){
+	j = Math.floor(Math.random() * (i+1));
+	temp = this[j];
+	this[j] = this[i];
+	this[i] = temp;
+	}
+}
+function newGameBoard(){
+	tiles_flipped = 0;
+	var output = '';
+	memory_array.memory_tile_shuffle();
+	for(var i = 0; i < memory_array.length; i++){
+	output += '<div id="tile_'+i+'" onclick="memoryFlipTile(this,\''+memory_array[i]+'\')"></div>';
+	}
+	document.getElementById('memory_board').innerHTML = output;
+}
+function memoryFlipTile(tile,val){
+	if(tile.innerHTML == "" && memory_values.length < 2){
+	tile.style.background = '#FFF';
+	tile.innerHTML = val;
+	if(memory_values.length == 0){
+	memory_values.push(val);
+	memory_tile_ids.push(tile.id);
+	}
+	else if(memory_values.length == 1){
+	memory_values.push(val);
+	memory_tile_ids.push(tile.id);
+	if(memory_values[0] == memory_values[1]){
+	tiles_flipped += 2;
+	memory_values = [];
+	memory_tile_ids = [];
+	//see if the board has been cleared
+	if(tiles_flipped == memory_array.length){
+	alert("Congrats! You cleared the board, would you like to play again?");
+	document.getElementById('memory_board').innerHTML = "";
+	newGameBoard();
+		}
+	}
+	else {
+function flip2Back(){
+	//flip the tiles back over when they dongt match
+	var tile_1 = document.getElementById(memory_tile_ids[0]);
+	var tile_2 = document.getElementById(memory_tile_ids[1]);
+	tile_1.style.background = 'url(tile_bg.jpg) no-repeat';
+	tile_1.innerHTML = "";
+	tile_2.style.background = 'url(tile_bg.jpg) no-repeat';
+	tile_2.innerHTML = "";
+	//clear the memory of the arrays
+	memory_values = [];
+	memory_tile_ids = [];
+	}
+setTimeout(flip2Back, 700);
+	}
+}
+}
+}
+</script>
+
+<div id="memory_board"></div>
+<!-- new board-->
+<script>newGameBoard();</script>
+</body>
+</html>
